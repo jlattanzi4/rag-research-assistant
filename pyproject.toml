@@ -1,0 +1,153 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rag-research-assistant"
+version = "0.1.0"
+description = "An LLM-powered research assistant using Retrieval-Augmented Generation"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    { name = "Joseph Lattanzi" }
+]
+keywords = ["llm", "rag", "research", "ai", "langchain", "anthropic"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    # LLM Framework
+    "langchain>=0.1.0",
+    "langchain-community>=0.0.20",
+    "langchain-huggingface>=0.0.3",
+    "langchain-ollama>=0.1.0",
+
+    # Vector Database
+    "chromadb>=0.4.0",
+
+    # Embeddings (free, local)
+    "sentence-transformers>=2.2.0",
+
+    # Tokenization
+    "tiktoken>=0.5.0",
+
+    # Document Processing
+    "pypdf2>=3.0.0",
+    "pdfplumber>=0.10.0",
+    "markdown>=3.5.0",
+    "beautifulsoup4>=4.12.0",
+
+    # Web Framework
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+
+    # Frontend
+    "streamlit>=1.30.0",
+
+    # Utilities
+    "python-dotenv>=1.0.0",
+    "rich>=13.0.0",
+    "typer>=0.9.0",
+    "tqdm>=4.66.0",
+    "httpx>=0.26.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    # Testing
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.1.0",
+
+    # Linting & Formatting
+    "ruff>=0.2.0",
+    "black>=24.0.0",
+    "mypy>=1.8.0",
+
+    # Pre-commit
+    "pre-commit>=3.6.0",
+
+    # Type stubs
+    "types-requests>=2.31.0",
+    "types-beautifulsoup4>=4.12.0",
+]
+
+eval = [
+    # RAG Evaluation
+    "ragas>=0.1.0",
+    "datasets>=2.16.0",
+]
+
+paid = [
+    # Optional paid API providers
+    "langchain-anthropic>=0.1.0",
+    "langchain-openai>=0.1.0",
+    "anthropic>=0.18.0",
+    "openai>=1.0.0",
+]
+
+[project.scripts]
+rag-assistant = "rag_assistant.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/jlattanzi4/rag-research-assistant"
+Repository = "https://github.com/jlattanzi4/rag-research-assistant"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rag_assistant"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+]
+
+[tool.ruff.isort]
+known-first-party = ["rag_assistant"]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["src/rag_assistant"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+]

@@ -1,0 +1,43 @@
+Retrieval-Augmented Generation (RAG) Systems
+
+Retrieval-Augmented Generation (RAG) is an AI framework that combines information retrieval with text generation. It addresses key limitations of large language models by grounding responses in external knowledge sources.
+
+Core Concept
+
+RAG systems enhance language models by retrieving relevant documents from a knowledge base before generating responses. This approach offers several advantages:
+
+1. Reduced Hallucination: By grounding responses in retrieved documents, RAG systems are less likely to generate false information.
+
+2. Up-to-date Information: The knowledge base can be updated without retraining the model, ensuring responses reflect current information.
+
+3. Source Attribution: RAG enables citation of sources, improving transparency and trustworthiness.
+
+4. Domain Adaptation: Organizations can customize RAG systems with their proprietary documents without fine-tuning expensive models.
+
+Architecture Components
+
+Document Processing:
+Raw documents are processed and split into smaller chunks. Chunking strategies include fixed-size splitting, sentence-based splitting, and semantic chunking. The optimal chunk size balances context completeness with retrieval precision.
+
+Embedding Generation:
+Text chunks are converted into dense vector representations using embedding models. Popular choices include OpenAI's text-embedding models, sentence-transformers, and domain-specific embeddings.
+
+Vector Database:
+Embeddings are stored in vector databases optimized for similarity search. Options include Pinecone, Chroma, Weaviate, and Milvus. These databases use algorithms like HNSW for efficient approximate nearest neighbor search.
+
+Retrieval:
+Given a query, the system embeds the query and finds the most similar document chunks. Hybrid search combining semantic and keyword matching often improves results.
+
+Generation:
+Retrieved chunks are provided as context to a language model, which generates a response grounded in this information. Prompt engineering plays a crucial role in response quality.
+
+Best Practices
+
+Chunk Size Optimization:
+Experiment with different chunk sizes. Smaller chunks improve retrieval precision but may lack context. Larger chunks provide more context but may include irrelevant information.
+
+Re-ranking:
+A two-stage retrieval approach first retrieves many candidates, then re-ranks them with a more sophisticated model.
+
+Evaluation:
+Evaluate RAG systems on retrieval metrics (precision, recall, MRR) and generation metrics (faithfulness, relevance, coherence). The RAGAS framework provides standardized evaluation.

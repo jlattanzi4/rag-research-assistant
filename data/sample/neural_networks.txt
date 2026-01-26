@@ -1,0 +1,36 @@
+Deep Learning and Neural Networks
+
+Neural networks are computing systems inspired by biological neural networks in the human brain. Deep learning refers to neural networks with multiple hidden layers, enabling them to learn hierarchical representations of data.
+
+Architecture Components
+
+Neurons and Layers:
+Artificial neurons receive inputs, apply weights, sum them up, and pass the result through an activation function. Neurons are organized into layers: input layer, hidden layers, and output layer. The number and size of hidden layers define the network's depth and capacity.
+
+Activation Functions:
+Non-linear activation functions allow neural networks to learn complex patterns. Common functions include ReLU (Rectified Linear Unit), sigmoid, tanh, and softmax. ReLU has become the default choice for hidden layers due to its computational efficiency and ability to mitigate vanishing gradients.
+
+Loss Functions:
+The loss function measures the difference between predicted and actual outputs. Cross-entropy loss is used for classification, while mean squared error is common for regression. The choice of loss function depends on the task and output distribution.
+
+Training Process
+
+Backpropagation:
+Backpropagation is the algorithm used to calculate gradients of the loss function with respect to network weights. It applies the chain rule of calculus to efficiently compute these gradients layer by layer.
+
+Gradient Descent:
+Optimization algorithms update weights to minimize the loss function. Stochastic Gradient Descent (SGD) and its variants like Adam, RMSprop, and AdaGrad are commonly used. Learning rate is a crucial hyperparameter affecting convergence.
+
+Batch Normalization:
+Batch normalization normalizes layer inputs during training, which stabilizes and accelerates training. It also provides some regularization effect.
+
+Popular Architectures
+
+Convolutional Neural Networks (CNNs):
+CNNs excel at processing grid-like data such as images. They use convolutional layers to detect local patterns and pooling layers to reduce spatial dimensions. CNNs have revolutionized computer vision tasks.
+
+Recurrent Neural Networks (RNNs):
+RNNs are designed for sequential data like text and time series. They maintain hidden state that captures information from previous time steps. LSTM and GRU are popular variants that address the vanishing gradient problem.
+
+Transformers:
+Transformers use self-attention mechanisms to process sequences in parallel. They have become the dominant architecture for natural language processing, powering models like BERT and GPT.
