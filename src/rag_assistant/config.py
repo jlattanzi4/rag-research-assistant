@@ -9,12 +9,25 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
+    # LLM Provider: "ollama" (local) or "groq" (cloud, free)
+    llm_provider: str = Field(
+        default="ollama", description="LLM provider: 'ollama' or 'groq'"
+    )
+
     # Ollama Settings (free, local)
     ollama_base_url: str = Field(
         default="http://localhost:11434", description="Ollama server URL"
     )
     ollama_model: str = Field(
         default="llama3.2", description="Ollama model name"
+    )
+
+    # Groq Settings (free cloud API)
+    groq_api_key: str = Field(
+        default="", description="Groq API key (free at console.groq.com)"
+    )
+    groq_model: str = Field(
+        default="llama-3.1-8b-instant", description="Groq model name"
     )
 
     # LLM Settings

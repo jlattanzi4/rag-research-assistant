@@ -1,10 +1,6 @@
-"""LLM service for response generation using Ollama (free, local)."""
+"""LLM service for response generation using Ollama (local) or Groq (cloud)."""
 
 from dataclasses import dataclass
-
-from langchain_ollama import OllamaLLM
-from langchain_core.messages import HumanMessage
-from langchain_core.prompts import ChatPromptTemplate
 
 from rag_assistant.config import settings
 from rag_assistant.retrieval.vector_store import SearchResult
@@ -44,42 +40,57 @@ Question: {question}
 Please provide a comprehensive answer based on the context above. Include citations to the source documents."""
 
 
+def create_llm(provider: str | None = None):
+    """Create an LLM instance based on the provider.
+
+    Args:
+        provider: LLM provider ('ollama' or 'groq'). Defaults to settings.
+
+    Returns:
+        LLM instance.
+    """
+    provider = provider or settings.llm_provider
+
+    if provider == "groq":
+        from langchain_groq import ChatGroq
+        return ChatGroq(
+            model=settings.groq_model,
+            api_key=settings.groq_api_key,
+            temperature=settings.llm_temperature,
+            max_tokens=settings.llm_max_tokens,
+        )
+    else:  # Default to Ollama
+        from langchain_ollama import OllamaLLM
+        return OllamaLLM(
+            model=settings.ollama_model,
+            base_url=settings.ollama_base_url,
+            temperature=settings.llm_temperature,
+            num_predict=settings.llm_max_tokens,
+        )
+
+
 class LLMService:
-    """Service for LLM-based response generation using Ollama."""
+    """Service for LLM-based response generation."""
 
     def __init__(
         self,
-        model: str | None = None,
+        provider: str | None = None,
         temperature: float | None = None,
         max_tokens: int | None = None,
-        base_url: str | None = None,
     ) -> None:
         """Initialize the LLM service.
 
         Args:
-            model: Model name. Defaults to settings.ollama_model.
+            provider: LLM provider ('ollama' or 'groq'). Defaults to settings.
             temperature: Temperature for generation. Defaults to settings.
             max_tokens: Maximum tokens for response. Defaults to settings.
-            base_url: Ollama server URL. Defaults to settings.ollama_base_url.
         """
-        self.model = model or settings.ollama_model
+        self.provider = provider or settings.llm_provider
         self.temperature = temperature if temperature is not None else settings.llm_temperature
         self.max_tokens = max_tokens or settings.llm_max_tokens
-        self.base_url = base_url or settings.ollama_base_url
 
-        # Initialize Ollama client (free, local)
-        self.llm = OllamaLLM(
-            model=self.model,
-            base_url=self.base_url,
-            temperature=self.temperature,
-            num_predict=self.max_tokens,
-        )
-
-        # Create prompt template
-        self.prompt = ChatPromptTemplate.from_messages([
-            ("system", RAG_SYSTEM_PROMPT),
-            ("human", RAG_USER_PROMPT_TEMPLATE),
-        ])
+        # Initialize the LLM
+        self.llm = create_llm(self.provider)
 
     def _format_context(self, search_results: list[SearchResult]) -> str:
         """Format search results into context string.
@@ -128,16 +139,23 @@ class LLMService:
         if context is None:
             context = self._format_context(search_results)
 
-        # Build the full prompt (Ollama works best with a single string prompt)
+        # Build the full prompt
         full_prompt = f"""{RAG_SYSTEM_PROMPT}
 
 {RAG_USER_PROMPT_TEMPLATE.format(context=context, question=query)}"""
 
         # Generate response
-        response = self.llm.invoke(full_prompt)
+        if self.provider == "groq":
+            # Groq uses chat interface
+            from langchain_core.messages import HumanMessage
+            response = self.llm.invoke([HumanMessage(content=full_prompt)])
+            answer = response.content
+        else:
+            # Ollama uses simple string interface
+            answer = self.llm.invoke(full_prompt)
 
         return RAGResponse(
-            answer=response,
+            answer=answer,
             sources=search_results or [],
             query=query,
         )
@@ -151,5 +169,9 @@ class LLMService:
         Returns:
             Generated response text.
         """
-        response = self.llm.invoke(prompt)
-        return response
+        if self.provider == "groq":
+            from langchain_core.messages import HumanMessage
+            response = self.llm.invoke([HumanMessage(content=prompt)])
+            return response.content
+        else:
+            return self.llm.invoke(prompt)
