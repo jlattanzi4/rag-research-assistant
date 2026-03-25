@@ -26,7 +26,7 @@ An LLM-powered research assistant using Retrieval-Augmented Generation (RAG) to 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/rag-research-assistant.git
+git clone https://github.com/jlattanzi4/rag-research-assistant.git
 cd rag-research-assistant
 
 # Create virtual environment
