@@ -1,3 +1,6 @@
+> [!WARNING]
+> **Archived, November 2026.** This project is not maintained. It was built on Claude 3 models that have since been retired, so it does not run as configured, and there is no hosted demo. The code is kept as it was, as a record of the retrieval design: hybrid BM25 and embedding search, reranking, and response-quality checks.
+
 # RAG Research Assistant
 
 An LLM-powered research assistant using Retrieval-Augmented Generation (RAG) to answer questions from your document collection. Features semantic search, hybrid retrieval, response quality assessment, and both API and web interfaces.
